@@ -75,7 +75,7 @@ app.get("/", (request, respone) => {
 });
 
 app.get("/users", async (request, respone) => {
-  const users = await User.find().sort({ userid: 1 }).limit(2);
+  const users = await User.find();
   respone.send(users);
 });
 
