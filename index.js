@@ -60,7 +60,7 @@ const USERS = [
 app.use(express.json());
 
 app.get("/", (request, respone) => {
-  respone.send("Welcome to node app");
+  respone.send("Welcome to node app!!!! Hi Guys");
 });
 
 app.get("/users", (request, respone) => {
@@ -83,3 +83,9 @@ app.post("/users", (request, respone) => {
 });
 
 app.listen(PORT, () => console.log("The server is started in " + PORT));
+
+// npm init - It will package json
+// npm install express
+// npm install --save-dev nodemon
+
+// ORM - Object–relational mapping
