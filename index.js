@@ -56,6 +56,8 @@ const USERS = [
     id: "8",
   },
 ];
+// middleware
+app.use(express.json());
 
 app.get("/", (request, respone) => {
   respone.send("Welcome to node app");
@@ -71,7 +73,12 @@ app.get("/users/:id", (request, respone) => {
   respone.send(user);
 });
 
+// Add Users
 app.post("/users", (request, respone) => {
+  const addUser = request.body;
+  console.log(addUser);
+  USERS.push(addUser);
+  console.log(USERS);
   respone.send(USERS);
 });
 
