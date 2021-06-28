@@ -1,4 +1,6 @@
-const express = require("express");
+// const express = require("express");
+import express from "express";
+import mongoose from "mongoose";
 const app = express();
 const PORT = 5000;
 // Recipe app should come from below method &
@@ -56,6 +58,14 @@ const USERS = [
     id: "8",
   },
 ];
+
+const url = "mongodb://localhost/movieData";
+
+mongoose.connect(url, { useNewUrlParser: true });
+const con = mongoose.connection;
+
+con.on("open", () => console.log("MongoDB is connected"));
+
 // middleware
 app.use(express.json());
 
@@ -87,5 +97,6 @@ app.listen(PORT, () => console.log("The server is started in " + PORT));
 // npm init - It will package json
 // npm install express
 // npm install --save-dev nodemon
+// npm install mongoose
 
 // ORM - Object–relational mapping
