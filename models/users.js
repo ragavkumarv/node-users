@@ -19,4 +19,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export const User = mongoose.model("User", userSchema);
+// model first argument is sigular
+// and in MongoDB the collection will be plural
+// Collection name - "User"
+export const Users = mongoose.model("User", userSchema);

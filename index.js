@@ -1,7 +1,7 @@
 // const express = require("express");
 import express from "express";
 import mongoose from "mongoose";
-import { User } from "./models/users.js";
+import { Users } from "./models/users.js";
 const app = express();
 const PORT = 5000;
 // Recipe app should come from below method &
@@ -60,7 +60,7 @@ const PORT = 5000;
 //   },
 // ];
 
-// Opened Connection to DB
+// Opened Connection to DB, movieData - db name
 const url = "mongodb://localhost/movieData";
 
 mongoose.connect(url, { useNewUrlParser: true });
@@ -75,24 +75,65 @@ app.get("/", (request, respone) => {
 });
 
 app.get("/users", async (request, respone) => {
-  const users = await User.find();
+  const users = await Users.find();
   respone.send(users);
 });
 
-app.get("/users/:id", (request, respone) => {
+// app.get("/users", (request, respone) => {
+//   Users.find().then((users) => respone.send(users));
+// });
+
+// fetch - returns promise
+// async - JS - WebApi -> Callback Q ->  Event loop -> Call Stack
+// User.find() -
+// db.users.find({id: "3"})
+app.get("/users/:id", async (request, respone) => {
   const { id } = request.params;
-  const user = USERS.find((data) => data.id === id);
+  const user = await Users.findOne({ id: id });
   respone.send(user);
 });
 
-// Add Users
-app.post("/users", (request, respone) => {
+// Use insertMany insertOne
+// Add Users - recipe app
+app.post("/users", async (request, respone) => {
   const addUser = request.body;
   console.log(addUser);
-  USERS.push(addUser);
-  console.log(USERS);
-  respone.send(USERS);
+
+  // const user = new Users({
+  //   id: addUser.id,
+  //   avatar: addUser.avatar,
+  //   createdAt: addUser.createdAt,
+  //   name: addUser.name,
+  // });
+
+  const user = new Users(addUser);
+
+  try {
+    const newUser = await user.save();
+    respone.send(newUser);
+  } catch (err) {
+    respone.status(500);
+    respone.send(err);
+  }
 });
+
+// ORM - mongoDB deleteOne, couchDB removeOne // U can interact with multiple database
+// Migration is a breeze
+// remove
+app.delete("/users/:id", async (request, respone) => {
+  const { id } = request.params;
+  try {
+    const user = await Users.findById(id);
+    await user.remove();
+    // console.log();
+    respone.send({ ...user, message: "Deleted successfully" });
+  } catch (err) {
+    respone.status(500);
+    respone.send("User is missing");
+  }
+});
+
+// put & delete
 
 app.listen(PORT, () => console.log("The server is started in " + PORT));
 
@@ -102,3 +143,6 @@ app.listen(PORT, () => console.log("The server is started in " + PORT));
 // npm install mongoose
 
 // ORM - Object–relational mapping
+
+// Create react app - new app
+// use this user data
