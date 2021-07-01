@@ -4,11 +4,10 @@ import mongoose from "mongoose";
 import router from "./routes/recipe.js";
 import { userRouter } from "./routes/user.js";
 const app = express();
-const PORT = 5000;
+const port = process.env.PORT || 3200;
 
 // Opened Connection to DB, movieData - db name
-const url =
-  "mongodb+srv://ragavkumarv:bfOCZ870C664CA1X@cluster0.yn2hm.mongodb.net/RecipeData?retryWrites=true&w=majority";
+const url = process.env.MONGODB_URI || "mongodb://localhost/RecipeData";
 
 mongoose.connect(url, { useNewUrlParser: true });
 const con = mongoose.connection;
