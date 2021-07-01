@@ -34,7 +34,7 @@ router
   .route("/:id")
   .get(async (request, respone) => {
     const { id } = request.params;
-    const user = await Users.findOne({ id: id });
+    const user = await Users.findById(id);
     respone.send(user);
   })
   .delete(async (request, respone) => {
@@ -51,6 +51,25 @@ router
     } catch (err) {
       respone.status(500);
       respone.send("User is missing");
+    }
+  })
+  .patch(async (request, respone) => {
+    const { id } = request.params;
+    const { name, avatar } = request.body;
+
+    try {
+      const user = await Users.findById(id);
+      if (name) {
+        user.name = name;
+      }
+      if (avatar) {
+        user.avatar = avatar;
+      }
+      await user.save();
+      respone.send(user);
+    } catch (err) {
+      respone.status(500);
+      respone.send(err);
     }
   });
 

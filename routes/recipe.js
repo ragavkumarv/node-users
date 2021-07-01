@@ -7,7 +7,16 @@ const router = express.Router();
 router
   .route("/")
   .get(async (request, respone) => {
-    const recipe = await Recipes.find();
+    // const { like } = request.query;
+    // `^${request.query.title}`
+    console.log("before", request.query);
+    if (request.query.title) {
+      request.query.title = new RegExp("^" + request.query.title, "i");
+    }
+    // /idly/
+    console.log("after", request.query);
+
+    const recipe = await Recipes.find(request.query);
     respone.send(recipe);
   })
   .post(async (request, respone) => {
