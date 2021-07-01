@@ -7,7 +7,8 @@ const app = express();
 const PORT = 5000;
 
 // Opened Connection to DB, movieData - db name
-const url = "mongodb://localhost/movieData";
+const url =
+  "mongodb+srv://ragavkumarv:bfOCZ870C664CA1X@cluster0.yn2hm.mongodb.net/RecipeData?retryWrites=true&w=majority";
 
 mongoose.connect(url, { useNewUrlParser: true });
 const con = mongoose.connection;

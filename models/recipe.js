@@ -19,3 +19,6 @@ const recipeSchema = new mongoose.Schema({
 // and in MongoDB the collection will be plural
 // Collection name - "User"
 export const Recipes = mongoose.model("Recipe", recipeSchema);
+// Named exports
+// importing   {}
+// import { Recipes } from "../models/recipe.js";
