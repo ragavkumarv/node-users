@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import express from "express";
+import jwt from "jsonwebtoken";
 import { Users } from "../models/users.js";
+import { auth } from "../middleware/auth.js";
 const router = express.Router();
 
 router
@@ -33,7 +35,7 @@ router
 
 router
   .route("/:id")
-  .get(async (request, respone) => {
+  .get(auth, async (request, respone) => {
     const { id } = request.params;
     const user = await Users.findById(id);
     respone.send(user);
@@ -78,13 +80,17 @@ router.route("/login").post(async (request, respone) => {
   const { name, password } = request.body;
   try {
     const user = await Users.findOne({ name: name });
+    console.log(user);
     const inDbStoredPassword = user.password;
     const isMatch = await bcrypt.compare(password, inDbStoredPassword);
+    console.log(isMatch, user.toObject);
     if (!isMatch) {
       respone.status(500);
       respone.send({ message: "Invalid credentials" });
     } else {
-      respone.send({ message: "Successful login" });
+      const token = jwt.sign({ id: user._id }, "mysecretkey");
+      console.log(token);
+      respone.send({ ...user.toObject(), token, message: "Successfull login" });
     }
   } catch (err) {
     respone.status(500);
