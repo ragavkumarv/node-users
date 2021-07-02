@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import express from "express";
 import { Users } from "../models/users.js";
 const router = express.Router();
@@ -73,4 +74,46 @@ router
     }
   });
 
+router.route("/login").post(async (request, respone) => {
+  const { username, password } = request.body;
+  try {
+    const user = await Users.findOne({ username: username });
+    const inDbStoredPassword = user.password;
+    const isMatch = await bcrypt.compare(password, inDbStoredPassword);
+    if (!isMatch) {
+      respone.status(500);
+      respone.send({ message: "Invalid credentials" });
+    } else {
+      respone.send({ message: "Successful login" });
+    }
+  } catch (err) {
+    respone.status(500);
+    respone.send(err);
+  }
+});
+
+// Creating user
+router.route("/signup").post(async (request, respone) => {
+  const { username, password, avatar, createdAt } = request.body;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const user = new Users({
+      name: username,
+      password: passwordHash,
+      avatar: avatar,
+      createdAt: createdAt,
+    });
+
+    await user.save();
+    // db to store it
+  } catch (err) {
+    respone.status(500);
+    respone.send(err);
+  }
+});
+
 export const userRouter = router;
+
+// s3 bucket

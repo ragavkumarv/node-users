@@ -84,3 +84,5 @@ export default router;
 // {
 //   profile: "http://newprofile"
 // }
+const inDbStoredPassword =
+  "$2b$10$ClN9lkayRBtSTPShLDkKa.OCnxbnNoPQoAXpraQJrKQj2Wvd8tdTu";

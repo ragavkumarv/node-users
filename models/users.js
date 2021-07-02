@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    required: true,
-  },
   avatar: {
     type: String,
     required: true,
@@ -14,6 +10,10 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
+    type: String,
+    required: true,
+  },
+  password: {
     type: String,
     required: true,
   },
