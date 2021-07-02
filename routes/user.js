@@ -75,9 +75,9 @@ router
   });
 
 router.route("/login").post(async (request, respone) => {
-  const { username, password } = request.body;
+  const { name, password } = request.body;
   try {
-    const user = await Users.findOne({ username: username });
+    const user = await Users.findOne({ name: name });
     const inDbStoredPassword = user.password;
     const isMatch = await bcrypt.compare(password, inDbStoredPassword);
     if (!isMatch) {
@@ -94,13 +94,13 @@ router.route("/login").post(async (request, respone) => {
 
 // Creating user
 router.route("/signup").post(async (request, respone) => {
-  const { username, password, avatar, createdAt } = request.body;
+  const { name, password, avatar, createdAt } = request.body;
   try {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
     const user = new Users({
-      name: username,
+      name: name,
       password: passwordHash,
       avatar: avatar,
       createdAt: createdAt,
@@ -108,6 +108,7 @@ router.route("/signup").post(async (request, respone) => {
 
     await user.save();
     // db to store it
+    respone.send(user);
   } catch (err) {
     respone.status(500);
     respone.send(err);
