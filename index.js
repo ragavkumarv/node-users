@@ -1,4 +1,5 @@
 // const express = require("express");
+import cors from "cors";
 import express from "express";
 import mongoose from "mongoose";
 import router from "./routes/recipe.js";
@@ -15,6 +16,7 @@ const con = mongoose.connection;
 con.on("open", () => console.log("MongoDB is connected"));
 
 // middleware
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (request, respone) => {
