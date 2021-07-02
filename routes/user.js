@@ -1,11 +1,13 @@
 import bcrypt from "bcrypt";
 import express from "express";
+import jwt from "jsonwebtoken";
+import { auth as nice } from "../middleware/auth.js";
 import { Users } from "../models/users.js";
 const router = express.Router();
 
 router
   .route("/")
-  .get(async (request, respone) => {
+  .get(nice, async (request, respone) => {
     const users = await Users.find();
     respone.send(users);
   })
@@ -33,12 +35,12 @@ router
 
 router
   .route("/:id")
-  .get(async (request, respone) => {
+  .get(nice, async (request, respone) => {
     const { id } = request.params;
     const user = await Users.findById(id);
     respone.send(user);
   })
-  .delete(async (request, respone) => {
+  .delete(nice, async (request, respone) => {
     const { id } = request.params;
     try {
       const user = await Users.findById(id);
@@ -77,14 +79,19 @@ router
 router.route("/login").post(async (request, respone) => {
   const { name, password } = request.body;
   try {
-    const user = await Users.findOne({ name: name });
+    const user = await Users.findOne({ name });
     const inDbStoredPassword = user.password;
     const isMatch = await bcrypt.compare(password, inDbStoredPassword);
     if (!isMatch) {
       respone.status(500);
-      respone.send({ message: "Invalid credentials" });
+      respone.send({ message: "Invalid credentials!!!" });
     } else {
-      respone.send({ message: "Successful login" });
+      const token = jwt.sign({ id: user._id }, process.env.SECERET_KEY);
+      respone.send({
+        ...user.toObject(),
+        token,
+        message: "Successful login",
+      });
     }
   } catch (err) {
     respone.status(500);
@@ -100,10 +107,10 @@ router.route("/signup").post(async (request, respone) => {
     const passwordHash = await bcrypt.hash(password, salt);
 
     const user = new Users({
-      name: name,
+      name,
       password: passwordHash,
-      avatar: avatar,
-      createdAt: createdAt,
+      avatar,
+      createdAt,
     });
 
     await user.save();
